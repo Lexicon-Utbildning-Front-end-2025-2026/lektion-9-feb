@@ -1,4 +1,4 @@
-import PokemonCard from "./components/PokemonCard";
+import Image from "next/image";
 
 // Vi definierar ett interface för att TypeScript ska vara nöjt
 interface Pokemon {
@@ -49,7 +49,7 @@ async function getPokemon(): Promise<Pokemon[]> {
     // API-fel
     // JSON-fel
     console.error("Fel vid hämtning: ", error);
-    throw new Error("Misslyckades att hämta Pokémon");
+    throw error;
     // Skicka vidare felet (så komponenten kan hantera det)
   }
 }
@@ -66,15 +66,23 @@ export default async function HomePage() {
         <h1>Min Poké-Shop</h1>
         <p>Denna data hämtas direkt vid sidladdning.</p>
         <ul>
-          {pokemonList.map((pokemon) => (
-            <PokemonCard key={pokemon.name} pokemon={pokemon} />
+          {pokemonList.map((pokemon: { name: string, image: string }) => (
+            <li key={pokemon.name}>
+              <h3>{pokemon.name}</h3>
+              <Image
+                src={pokemon.image}
+                width={500}
+                height={500}
+                alt="Image of Pokémon"
+              />
+            </li>
           ))}
         </ul>
       </main>
     );
   } catch (error) {
     // Om något går fel -> visa fallback-UI istället
-    console.error("Fel vid hämtning: ", error);
-    throw new Error("Misslyckades att hämta Pokémon");
+    console.error("Fel vid hämtning:", error);
+    throw error;
   }
 }
